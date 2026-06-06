@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head') %>
+<body>
+<%- include('../partials/header') %>
+<main class="container">
+  <%- include('../partials/flash') %>
+  <div class="page-header">
+    <h1>Manage Orders</h1>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <% if (orders && orders.length > 0) { %>
+        <table class="table">
+          <thead class="table-header">
+            <tr>
+              <th>ID</th>
+              <th>Customer</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% orders.forEach(function(order) { %>
+              <tr class="table-row">
+                <td>#<%= order.id %></td>
+                <td><%= order.user_name %></td>
+                <td>$<%= Number(order.total).toFixed(2) %></td>
+                <td>
+                  <% var statusClass = 'badge-info'; %>
+                  <% if (order.status === 'pending') { statusClass = 'badge-warning'; } %>
+                  <% if (order.status === 'confirmed') { statusClass = 'badge-info'; } %>
+                  <% if (order.status === 'shipped') { statusClass = 'badge-info'; } %>
+                  <% if (order.status === 'delivered') { statusClass = 'badge-success'; } %>
+                  <% if (order.status === 'cancelled') { statusClass = 'badge-danger'; } %>
+                  <span class="badge <%= statusClass %>"><%= order.status %></span>
+                </td>
+                <td><%= new Date(order.created_at).toLocaleDateString() %></td>
+                <td>
+                  <form action="/admin/orders/<%= order.id %>/status" method="POST" style="display: flex; gap: 0.25rem; align-items: center;">
+                    <select name="status" class="form-select" style="padding: 0.25rem; font-size: 0.85rem;">
+                      <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                      <option value="confirmed" <%= order.status === 'confirmed' ? 'selected' : '' %>>Confirmed</option>
+                      <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                      <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                      <option value="cancelled" <%= order.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                    </select>
+                    <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } else { %>
+        <p>No orders found.</p>
+      <% } %>
+    </div>
+  </div>
+</main>
+<%- include('../partials/footer') %>
+</body>
+</html>

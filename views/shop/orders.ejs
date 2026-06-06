@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head') %>
+<body>
+  <%- include('../partials/header') %>
+  <main class="container">
+    <%- include('../partials/flash') %>
+
+    <div class="page-header mb-4">
+      <h1>My Orders</h1>
+    </div>
+
+    <% if (orders && orders.length > 0) { %>
+      <div class="table orders-table">
+        <div class="table-header flex gap-4">
+          <div style="flex: 1;">ID</div>
+          <div style="flex: 2;">Date</div>
+          <div style="flex: 1;">Items</div>
+          <div style="flex: 1;">Total</div>
+          <div style="flex: 1;">Status</div>
+          <div style="flex: 1;">Action</div>
+        </div>
+
+        <% orders.forEach(function(order) { %>
+          <div class="table-row flex gap-4 flex-center">
+            <div style="flex: 1;">#<%= order.id %></div>
+            <div style="flex: 2;"><%= new Date(order.created_at).toLocaleDateString() %></div>
+            <div style="flex: 1;"><%= order.item_count %></div>
+            <div style="flex: 1;">$<%= Number(order.total).toFixed(2) %></div>
+            <div style="flex: 1;">
+              <% if (order.status === 'pending') { %>
+                <span class="badge badge-warning">Pending</span>
+              <% } else if (order.status === 'confirmed') { %>
+                <span class="badge badge-success">Confirmed</span>
+              <% } else if (order.status === 'shipped') { %>
+                <span class="badge badge-info">Shipped</span>
+              <% } else { %>
+                <span class="badge badge-danger"><%= order.status %></span>
+              <% } %>
+            </div>
+            <div style="flex: 1;">
+              <a href="/orders/<%= order.id %>" class="btn btn-sm btn-outline">View</a>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="text-center mt-8">
+        <p>No orders yet</p>
+        <a href="/products" class="btn btn-primary mt-2">Start Shopping</a>
+      </div>
+    <% } %>
+  </main>
+  <%- include('../partials/footer') %>
+</body>
+</html>

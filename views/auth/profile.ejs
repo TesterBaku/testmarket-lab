@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head') %>
+<body>
+<%- include('../partials/header') %>
+<main class="container">
+  <%- include('../partials/flash') %>
+  <div class="page-header">
+    <h1>Hello, <%= user.name %></h1>
+  </div>
+
+  <div class="card" style="margin-bottom: 1.5rem;">
+    <div class="card-body">
+      <h3>User Information</h3>
+      <p><strong>Email:</strong> <%= user.email %></p>
+      <p><strong>Role:</strong> <span class="badge badge-info"><%= user.role %></span></p>
+      <p><strong>Member Since:</strong> <%= new Date(user.created_at).toLocaleDateString() %></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h3>Order History</h3>
+      <% if (orders && orders.length > 0) { %>
+        <table class="table">
+          <thead class="table-header">
+            <tr>
+              <th>ID</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% orders.forEach(function(order) { %>
+              <tr class="table-row">
+                <td>#<%= order.id %></td>
+                <td>$<%= Number(order.total).toFixed(2) %></td>
+                <td>
+                  <% var statusClass = 'badge-info'; %>
+                  <% if (order.status === 'pending') { statusClass = 'badge-warning'; } %>
+                  <% if (order.status === 'confirmed' || order.status === 'shipped') { statusClass = 'badge-info'; } %>
+                  <% if (order.status === 'delivered') { statusClass = 'badge-success'; } %>
+                  <% if (order.status === 'cancelled') { statusClass = 'badge-danger'; } %>
+                  <span class="badge <%= statusClass %>"><%= order.status %></span>
+                </td>
+                <td><%= new Date(order.created_at).toLocaleDateString() %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } else { %>
+        <p>You haven't placed any orders yet.</p>
+      <% } %>
+    </div>
+  </div>
+</main>
+<%- include('../partials/footer') %>
+</body>
+</html>

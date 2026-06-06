@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head') %>
+<body>
+  <%- include('../partials/header') %>
+  <main class="container">
+    <%- include('../partials/flash') %>
+
+    <!-- Hero Section -->
+    <section class="hero text-center mt-6 mb-6">
+      <h1>Welcome to TestMarket Lab</h1>
+      <p class="subtitle">Your e-commerce training app for Playwright automation</p>
+    </section>
+
+    <% if (categories && categories.length > 0) { %>
+      <% categories.forEach(function(category) { %>
+        <% if (products[category] && products[category].length > 0) { %>
+          <section class="category-section mb-6">
+            <h2 class="category-heading mb-3"><%= category.charAt(0).toUpperCase() + category.slice(1) %></h2>
+            <div class="grid grid-4 gap-4">
+              <% products[category].forEach(function(product) { %>
+                <div class="card product-card">
+                  <div class="card-body">
+                    <h3><%= product.name %></h3>
+                    <p class="price">$<%= Number(product.price).toFixed(2) %></p>
+                    <div class="flex flex-between mt-2">
+                      <a href="/products/<%= product.slug %>" class="btn btn-outline">View Details</a>
+                      <form action="/cart/add" method="POST">
+                        <input type="hidden" name="product_id" value="<%= product.id %>">
+                        <button type="submit" class="btn btn-primary">Add to Cart</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          </section>
+        <% } %>
+      <% }); %>
+    <% } else { %>
+      <div class="text-center mt-8">
+        <p>No categories available yet.</p>
+      </div>
+    <% } %>
+  </main>
+  <%- include('../partials/footer') %>
+</body>
+</html>

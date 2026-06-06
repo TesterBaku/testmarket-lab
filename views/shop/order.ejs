@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head') %>
+<body>
+  <%- include('../partials/header') %>
+  <main class="container">
+    <%- include('../partials/flash') %>
+
+    <% if (order) { %>
+      <% if (order.status === 'pending' || order.status === 'confirmed') { %>
+        <div class="page-header mb-4">
+          <h1>Order Confirmation</h1>
+        </div>
+        <div class="alert alert-success mb-4">
+          Your order has been placed successfully!
+        </div>
+      <% } else { %>
+        <div class="page-header mb-4">
+          <h1>Order #<%= order.id %></h1>
+        </div>
+      <% } %>
+
+      <div class="grid grid-2 gap-4">
+        <!-- Order Details Card -->
+        <div class="card">
+          <div class="card-body">
+            <h2>Order Details</h2>
+            <div class="mt-3">
+              <p><strong>Order ID:</strong> <%= order.id %></p>
+              <p><strong>Date:</strong> <%= new Date(order.created_at).toLocaleDateString() %></p>
+              <p>
+                <strong>Status:</strong>
+                <% if (order.status === 'pending') { %>
+                  <span class="badge badge-warning">Pending</span>
+                <% } else if (order.status === 'confirmed') { %>
+                  <span class="badge badge-success">Confirmed</span>
+                <% } else if (order.status === 'shipped') { %>
+                  <span class="badge badge-info">Shipped</span>
+                <% } else { %>
+                  <span class="badge badge-danger"><%= order.status %></span>
+                <% } %>
+              </p>
+            </div>
+
+            <h3 class="mt-4">Shipping Information</h3>
+            <div class="mt-2">
+              <p><%= order.shipping_name %></p>
+              <p><%= order.shipping_address %></p>
+              <p><%= order.shipping_city %> <%= order.shipping_zip %></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Items Card -->
+        <div class="card">
+          <div class="card-body">
+            <h2>Order Items</h2>
+            <% if (items && items.length > 0) { %>
+              <div class="table mt-3">
+                <div class="table-header flex gap-4">
+                  <div style="flex: 3;">Product</div>
+                  <div style="flex: 1;">Price</div>
+                  <div style="flex: 1;">Qty</div>
+                  <div style="flex: 1;">Subtotal</div>
+                </div>
+                <% items.forEach(function(item) { %>
+                  <div class="table-row flex gap-4">
+                    <div style="flex: 3;"><%= item.product_name %></div>
+                    <div style="flex: 1;">$<%= Number(item.price).toFixed(2) %></div>
+                    <div style="flex: 1;"><%= item.quantity %></div>
+                    <div style="flex: 1;">$<%= Number(item.price * item.quantity).toFixed(2) %></div>
+                  </div>
+                <% }); %>
+              </div>
+              <div class="total-row text-right mt-3">
+                <h3>Total: $<%= Number(order.total).toFixed(2) %></h3>
+              </div>
+            <% } else { %>
+              <p class="mt-3">No items found for this order.</p>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <a href="/orders" class="btn btn-outline">Back to My Orders</a>
+      </div>
+    <% } else { %>
+      <div class="text-center mt-8">
+        <p>Order not found.</p>
+        <a href="/orders" class="btn btn-outline mt-2">My Orders</a>
+      </div>
+    <% } %>
+  </main>
+  <%- include('../partials/footer') %>
+</body>
+</html>

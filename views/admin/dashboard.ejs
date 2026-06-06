@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head') %>
+<body>
+<%- include('../partials/header') %>
+<main class="container">
+  <%- include('../partials/flash') %>
+  <div class="page-header">
+    <h1>Admin Dashboard</h1>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+    <div class="card">
+      <div class="card-body">
+        <h3 style="font-size: 0.9rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px;">Total Products</h3>
+        <p style="font-size: 2rem; font-weight: bold; margin: 0.5rem 0 0 0;"><%= productCount %></p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h3 style="font-size: 0.9rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px;">Total Users</h3>
+        <p style="font-size: 2rem; font-weight: bold; margin: 0.5rem 0 0 0;"><%= userCount %></p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h3 style="font-size: 0.9rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px;">Total Orders</h3>
+        <p style="font-size: 2rem; font-weight: bold; margin: 0.5rem 0 0 0;"><%= orderCount %></p>
+      </div>
+    </div>
+    <% if (ordersByStatus) { %>
+      <% Object.keys(ordersByStatus).forEach(function(status) { %>
+        <div class="card">
+          <div class="card-body">
+            <h3 style="font-size: 0.9rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px;">
+              <%= status.charAt(0).toUpperCase() + status.slice(1) %> Orders
+            </h3>
+            <p style="font-size: 2rem; font-weight: bold; margin: 0.5rem 0 0 0;"><%= ordersByStatus[status] %></p>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h3>Recent Orders</h3>
+      <% if (recentOrders && recentOrders.length > 0) { %>
+        <table class="table">
+          <thead class="table-header">
+            <tr>
+              <th>ID</th>
+              <th>Customer</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% recentOrders.forEach(function(order) { %>
+              <tr class="table-row">
+                <td>#<%= order.id %></td>
+                <td><%= order.user_name %></td>
+                <td>$<%= Number(order.total).toFixed(2) %></td>
+                <td>
+                  <% var statusClass = 'badge-info'; %>
+                  <% if (order.status === 'pending') { statusClass = 'badge-warning'; } %>
+                  <% if (order.status === 'confirmed') { statusClass = 'badge-info'; } %>
+                  <% if (order.status === 'shipped') { statusClass = 'badge-info'; } %>
+                  <% if (order.status === 'delivered') { statusClass = 'badge-success'; } %>
+                  <% if (order.status === 'cancelled') { statusClass = 'badge-danger'; } %>
+                  <span class="badge <%= statusClass %>"><%= order.status %></span>
+                </td>
+                <td><%= new Date(order.created_at).toLocaleDateString() %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } else { %>
+        <p>No orders yet.</p>
+      <% } %>
+    </div>
+  </div>
+</main>
+<%- include('../partials/footer') %>
+</body>
+</html>

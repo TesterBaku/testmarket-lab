@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../partials/head') %>
+<body>
+<%- include('../partials/header') %>
+<main class="container">
+  <%- include('../partials/flash') %>
+  <div class="page-header">
+    <h1>Manage Users</h1>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <% if (users && users.length > 0) { %>
+        <table class="table">
+          <thead class="table-header">
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Registered Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% users.forEach(function(user) { %>
+              <tr class="table-row">
+                <td><%= user.id %></td>
+                <td><%= user.name %></td>
+                <td><%= user.email %></td>
+                <td>
+                  <% var roleClass = (user.role === 'admin') ? 'badge-warning' : 'badge-info'; %>
+                  <span class="badge <%= roleClass %>"><%= user.role %></span>
+                </td>
+                <td><%= new Date(user.created_at).toLocaleDateString() %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } else { %>
+        <p>No users found.</p>
+      <% } %>
+    </div>
+  </div>
+</main>
+<%- include('../partials/footer') %>
+</body>
+</html>

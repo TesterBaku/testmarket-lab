@@ -1,0 +1,12 @@
+<% if (typeof error !== 'undefined' && error) { %>
+  <div class="alert alert-error" id="flash-error">
+    <%= error %>
+    <button type="button" class="alert-close" onclick="this.parentElement.style.display='none'">&times;</button>
+  </div>
+<% } %>
+<% if (typeof success !== 'undefined' && success) { %>
+  <div class="alert alert-success" id="flash-success">
+    <%= success %>
+    <button type="button" class="alert-close" onclick="this.parentElement.style.display='none'">&times;</button>
+  </div>
+<% } %>
