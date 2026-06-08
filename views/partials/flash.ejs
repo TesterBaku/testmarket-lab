@@ -1,11 +1,11 @@
 <% if (typeof error !== 'undefined' && error) { %>
-  <div class="alert alert-error" id="flash-error">
+  <div class="alert alert-error flash-error" id="flash-error" data-testid="flash-error">
     <%= error %>
     <button type="button" class="alert-close" onclick="this.parentElement.style.display='none'">&times;</button>
   </div>
 <% } %>
 <% if (typeof success !== 'undefined' && success) { %>
-  <div class="alert alert-success" id="flash-success">
+  <div class="alert alert-success flash-success" id="flash-success" data-testid="flash-success">
     <%= success %>
     <button type="button" class="alert-close" onclick="this.parentElement.style.display='none'">&times;</button>
   </div>

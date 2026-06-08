@@ -207,12 +207,42 @@ router.post('/products/:id/delete', (req, res) => {
 // ────────────────────────────────────────────────────────────────────────────
 router.get('/users', (req, res) => {
   const db = getDB();
-  const users = db.prepare('SELECT id, email, name, role, created_at FROM users ORDER BY created_at DESC').all();
+  const search = (req.query.search || '').trim();
+
+  let users;
+  if (search) {
+    const like = `%${search}%`;
+    users = db.prepare(
+      "SELECT id, email, name, role, created_at FROM users WHERE name LIKE ? COLLATE NOCASE OR email LIKE ? COLLATE NOCASE ORDER BY created_at DESC"
+    ).all(like, like);
+  } else {
+    users = db.prepare('SELECT id, email, name, role, created_at FROM users ORDER BY created_at DESC').all();
+  }
 
   res.render('admin/users', {
     title: 'Users',
     users,
+    search,
   });
+});
+
+router.post('/users/:id/delete', (req, res) => {
+  const id = parseInt(req.params.id);
+  if (!id || isNaN(id)) {
+    req.session.flash = { error: 'Invalid user ID.' };
+    return res.redirect('/admin/users');
+  }
+
+  const db = getDB();
+  const result = db.prepare('DELETE FROM users WHERE id = ?').run(id);
+
+  if (result.changes === 0) {
+    req.session.flash = { error: 'User not found.' };
+    return res.redirect('/admin/users');
+  }
+
+  req.session.flash = { success: 'User deleted successfully.' };
+  res.redirect('/admin/users');
 });
 
 // ────────────────────────────────────────────────────────────────────────────
