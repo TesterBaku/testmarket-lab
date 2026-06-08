@@ -2,24 +2,24 @@
   <nav class="navbar">
     <a href="/" class="navbar-brand">TestMarket Lab</a>
     <div class="navbar-nav">
-      <a href="/" class="<%= path === '/' ? 'active' : '' %>">Home</a>
-      <a href="/products" class="<%= path && path.startsWith('/products') ? 'active' : '' %>">Products</a>
+      <a href="/" data-testid="nav-home" class="<%= path === '/' ? 'active' : '' %>">Home</a>
+      <a href="/products" data-testid="nav-products" class="<%= path && path.startsWith('/products') ? 'active' : '' %>">Products</a>
       <% if (typeof cartItems !== 'undefined' && cartItems && cartItems > 0) { %>
-        <a href="/cart" class="<%= path === '/cart' ? 'active' : '' %>">Cart <span class="cart-badge"><%= cartItems %></span></a>
+        <a href="/cart" data-testid="nav-cart" class="<%= path === '/cart' ? 'active' : '' %>">Cart <span class="cart-badge cart-count" data-testid="cart-count"><%= cartItems %></span></a>
       <% } else { %>
-        <a href="/cart" class="<%= path === '/cart' ? 'active' : '' %>">Cart</a>
+        <a href="/cart" data-testid="nav-cart" class="<%= path === '/cart' ? 'active' : '' %>">Cart</a>
       <% } %>
       <span class="nav-divider">|</span>
       <% if (user) { %>
-        <a href="/orders" class="<%= path && path.startsWith('/orders') ? 'active' : '' %>">My Orders</a>
-        <a href="/auth/profile" class="<%= path === '/auth/profile' ? 'active' : '' %>">Profile</a>
+        <a href="/orders" data-testid="nav-orders" class="<%= path && path.startsWith('/orders') ? 'active' : '' %>">My Orders</a>
+        <a href="/auth/profile" data-testid="nav-profile" class="<%= path === '/auth/profile' ? 'active' : '' %>">Profile</a>
         <% if (user.role === 'admin') { %>
-          <a href="/admin" class="<%= path && path.startsWith('/admin') ? 'active' : '' %>">Admin</a>
+          <a href="/admin" data-testid="nav-admin" class="<%= path && path.startsWith('/admin') ? 'active' : '' %>">Admin</a>
         <% } %>
-        <a href="/auth/logout">Logout</a>
+        <a href="/auth/logout" data-testid="nav-logout">Logout</a>
       <% } else { %>
-        <a href="/auth/login" class="<%= path === '/auth/login' ? 'active' : '' %>">Login</a>
-        <a href="/auth/register" class="<%= path === '/auth/register' ? 'active' : '' %>">Register</a>
+        <a href="/auth/login" data-testid="nav-login" class="<%= path === '/auth/login' ? 'active' : '' %>">Login</a>
+        <a href="/auth/register" data-testid="nav-register" class="<%= path === '/auth/register' ? 'active' : '' %>">Register</a>
       <% } %>
     </div>
   </nav>

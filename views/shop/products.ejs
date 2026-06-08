@@ -14,7 +14,7 @@
     <form method="GET" action="/products" class="filters flex gap-4 mb-4">
       <div class="form-group">
         <label class="form-label" for="category">Category</label>
-        <select name="category" id="category" class="form-select">
+        <select name="category" id="category" data-testid="category-filter" class="form-select">
           <option value="">All Categories</option>
           <% if (categories && categories.length > 0) { %>
             <% categories.forEach(function(cat) { %>
@@ -26,12 +26,12 @@
 
       <div class="form-group">
         <label class="form-label" for="search">Search</label>
-        <input type="text" name="search" id="search" class="form-input search-input" placeholder="Search products..." value="<%= search || '' %>">
+        <input type="text" name="search" id="search" data-testid="search-input" class="form-input search-input" placeholder="Search products..." value="<%= search || '' %>">
       </div>
 
       <div class="form-group">
         <label class="form-label" for="sort">Sort By</label>
-        <select name="sort" id="sort" class="form-select">
+        <select name="sort" id="sort" data-testid="sort-select" class="form-select">
           <option value="default" <%= sort === 'default' || !sort ? 'selected' : '' %>>Default</option>
           <option value="price_asc" <%= sort === 'price_asc' ? 'selected' : '' %>>Price Low-High</option>
           <option value="price_desc" <%= sort === 'price_desc' ? 'selected' : '' %>>Price High-Low</option>
@@ -40,7 +40,7 @@
       </div>
 
       <div class="form-group flex-center" style="align-self: flex-end;">
-        <button type="submit" class="btn btn-primary">Apply Filters</button>
+        <button type="submit" id="apply-filters" data-testid="apply-filters" class="btn btn-primary">Apply Filters</button>
       </div>
     </form>
 
@@ -48,7 +48,7 @@
     <% if (products && products.length > 0) { %>
       <div class="grid grid-4 gap-4">
         <% products.forEach(function(product) { %>
-          <div class="card product-card">
+          <div class="card product-card" data-testid="product-card">
             <div class="card-body">
               <h3><%= product.name %></h3>
               <p class="price">$<%= Number(product.price).toFixed(2) %></p>
@@ -56,7 +56,7 @@
                 <a href="/products/<%= product.slug %>" class="btn btn-outline">View Details</a>
                 <form action="/cart/add" method="POST">
                   <input type="hidden" name="product_id" value="<%= product.id %>">
-                  <button type="submit" class="btn btn-primary">Add to Cart</button>
+                  <button type="submit" data-testid="add-to-cart" class="btn btn-primary">Add to Cart</button>
                 </form>
               </div>
             </div>

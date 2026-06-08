@@ -237,7 +237,7 @@ router.get('/cart', (req, res) => {
  * Reset the database to seed state. Destroys all test data.
  * Useful for Playwright test setup in beforeEach hooks.
  */
-router.post('/reset', (req, res) => {
+function resetHandler(req, res) {
   try {
     seed();
     res.json({ message: 'Database reset successful' });
@@ -245,6 +245,14 @@ router.post('/reset', (req, res) => {
     console.error('Reset error:', err);
     res.status(500).json({ error: 'Reset failed', details: err.message });
   }
-});
+}
+
+router.post('/reset', resetHandler);
+
+/**
+ * POST /api/test/reset
+ * Alias of POST /api/reset for test convenience.
+ */
+router.post('/test/reset', resetHandler);
 
 module.exports = router;

@@ -27,6 +27,11 @@ router.get('/', (req, res) => {
   });
 });
 
+// GET /account — Alias that redirects to the profile page
+router.get('/account', (req, res) => {
+  res.redirect('/auth/profile');
+});
+
 // GET /products — Product listing with filtering, search, and sort
 router.get('/products', simulateDelay(800), (req, res) => {
   const db = getDB();

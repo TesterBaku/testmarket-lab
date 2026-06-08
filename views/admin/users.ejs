@@ -11,6 +11,15 @@
 
   <div class="card">
     <div class="card-body">
+      <form method="GET" action="/admin/users" class="filters flex gap-4 mb-4">
+        <div class="form-group">
+          <input type="text" name="search" id="user-search" data-testid="user-search" class="form-input" placeholder="Search users..." value="<%= typeof search !== 'undefined' && search ? search : '' %>">
+        </div>
+        <div class="form-group flex-center" style="align-self: flex-end;">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+      </form>
+
       <% if (users && users.length > 0) { %>
         <table class="table">
           <thead class="table-header">
@@ -20,6 +29,7 @@
               <th>Email</th>
               <th>Role</th>
               <th>Registered Date</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -33,6 +43,11 @@
                   <span class="badge <%= roleClass %>"><%= user.role %></span>
                 </td>
                 <td><%= new Date(user.created_at).toLocaleDateString() %></td>
+                <td>
+                  <form action="/admin/users/<%= user.id %>/delete" method="POST" style="display: inline;">
+                    <button type="submit" data-testid="delete-user" class="btn btn-danger">Delete</button>
+                  </form>
+                </td>
               </tr>
             <% }) %>
           </tbody>
