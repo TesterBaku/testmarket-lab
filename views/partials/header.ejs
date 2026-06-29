@@ -1,7 +1,11 @@
 <header>
   <nav class="navbar">
     <a href="/" class="navbar-brand">TestMarket Lab</a>
-    <div class="navbar-nav">
+    <button type="button" class="navbar-toggle" data-testid="nav-toggle"
+            aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav">
+      <span aria-hidden="true">&#9776;</span>
+    </button>
+    <div id="primary-nav" class="navbar-nav">
       <a href="/" data-testid="nav-home" class="<%= path === '/' ? 'active' : '' %>">Home</a>
       <a href="/products" data-testid="nav-products" class="<%= path && path.startsWith('/products') ? 'active' : '' %>">Products</a>
       <% if (typeof cartItems !== 'undefined' && cartItems && cartItems > 0) { %>

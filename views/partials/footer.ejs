@@ -3,3 +3,14 @@
     &copy; 2025 TestMarket Lab &mdash; Playwright Automation Course
   </div>
 </footer>
+<script>
+  (function () {
+    var toggle = document.querySelector('.navbar-toggle');
+    var nav = document.getElementById('primary-nav');
+    if (!toggle || !nav) return;
+    toggle.addEventListener('click', function () {
+      var open = nav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+  })();
+</script>
