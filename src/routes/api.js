@@ -205,6 +205,60 @@ router.get('/orders', (req, res) => {
 });
 
 /**
+ * POST /api/orders
+ * Create an order from { email, items }, where items is a non-empty array of
+ * { product_id, quantity }. Resolves prices from the products table, computes
+ * the total, and returns the created order with its line items.
+ * Useful for API-based test data setup without going through the checkout UI.
+ */
+router.post('/orders', (req, res) => {
+  const { email, items } = req.body;
+
+  if (!Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({ error: 'items must be a non-empty array' });
+  }
+
+  const db = getDB();
+
+  // Optionally associate the order with a known user
+  let userId = null;
+  if (email) {
+    const user = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
+    if (user) userId = user.id;
+  }
+
+  // Resolve each line item against the products table
+  const lineItems = [];
+  let total = 0;
+  for (const item of items) {
+    const product = db.prepare('SELECT * FROM products WHERE id = ?').get(parseInt(item.product_id));
+    if (!product) {
+      return res.status(400).json({ error: `Product ${item.product_id} not found` });
+    }
+    const quantity = parseInt(item.quantity) || 1;
+    lineItems.push({ product, quantity });
+    total += product.price * quantity;
+  }
+
+  const result = db.prepare(
+    'INSERT INTO orders (user_id, status, total, shipping_name, shipping_address, shipping_city, shipping_zip) VALUES (?, ?, ?, ?, ?, ?, ?)'
+  ).run(userId, 'pending', total, 'API Order', 'N/A', 'N/A', 'N/A');
+  const orderId = result.lastInsertRowid;
+
+  const insertItem = db.prepare(
+    'INSERT INTO order_items (order_id, product_id, product_name, price, quantity) VALUES (?, ?, ?, ?, ?)'
+  );
+  const responseItems = [];
+  for (const { product, quantity } of lineItems) {
+    insertItem.run(orderId, product.id, product.name, product.price, quantity);
+    responseItems.push({ product_id: product.id, product_name: product.name, price: product.price, quantity });
+  }
+
+  const order = db.prepare('SELECT * FROM orders WHERE id = ?').get(orderId);
+  res.status(201).json({ ...order, items: responseItems });
+});
+
+/**
  * GET /api/users
  * List all users (without passwords).
  */

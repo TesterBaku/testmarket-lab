@@ -128,4 +128,38 @@ router.get('/profile', requireAuth, (req, res) => {
   res.render('auth/profile', { orders });
 });
 
+// POST /auth/profile — update the logged-in user's name and email (requires auth)
+router.post('/profile', requireAuth, (req, res) => {
+  const { name, email } = req.body;
+  const db = getDB();
+  const userId = req.session.user.id;
+
+  if (!name || !name.trim()) {
+    req.session.flash = { error: 'Name is required.' };
+    return res.redirect('/auth/profile');
+  }
+  if (!email || !email.trim()) {
+    req.session.flash = { error: 'Email is required.' };
+    return res.redirect('/auth/profile');
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+
+  // Reject an email already taken by a different account
+  const existing = db.prepare('SELECT id FROM users WHERE email = ? AND id != ?').get(normalizedEmail, userId);
+  if (existing) {
+    req.session.flash = { error: 'That email is already in use.' };
+    return res.redirect('/auth/profile');
+  }
+
+  db.prepare('UPDATE users SET name = ?, email = ? WHERE id = ?').run(name.trim(), normalizedEmail, userId);
+
+  // Keep the session in sync so the header and profile reflect the change
+  req.session.user.name = name.trim();
+  req.session.user.email = normalizedEmail;
+
+  req.session.flash = { success: 'Profile updated successfully!' };
+  res.redirect('/auth/profile');
+});
+
 module.exports = router;
